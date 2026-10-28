@@ -51,13 +51,14 @@ export function HeroSection() {
         char.style.display = 'inline-block'
         char.style.cursor = 'default'
         char.style.willChange = 'transform, color'
+        const baseColor = window.getComputedStyle(char).color || '#ffffff'
 
         const onEnter = () => {
           playHoverTick()
           gsap.to(char, {
             y: -10,
             scale: 1.16,
-            color: '#00f5d4',
+            color: '#00bbf9',
             duration: 0.16,
             ease: 'power2.out',
             overwrite: 'auto',
@@ -68,7 +69,7 @@ export function HeroSection() {
           gsap.to(char, {
             y: 0,
             scale: 1,
-            color: '',
+            color: baseColor,
             duration: 0.55,
             ease: 'elastic.out(1.2, 0.4)',
             overwrite: 'auto',
@@ -233,12 +234,11 @@ export function HeroSection() {
         CRAFTING RESILIENT SYSTEMS <br />
         <span
           style={{
-            background: 'linear-gradient(135deg, #00f5d4 0%, #00bbf9 40%, #7b2cbf 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
+            color: '#00f5d4',
+            textShadow: '0 0 32px rgba(0, 245, 212, 0.45)',
           }}
         >
-          & IMMERSIVE
+          &amp; IMMERSIVE
         </span>{' '}
         WEB EXPERIENCES
       </h1>

@@ -74,6 +74,7 @@ export function ManifestoSection() {
         ENGINEERING <br />
         <span
           style={{
+            display: 'inline-block',
             background: 'linear-gradient(135deg, #00f5d4 0%, #00bbf9 50%, #f72585 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
