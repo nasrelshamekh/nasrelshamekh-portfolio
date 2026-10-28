@@ -156,6 +156,46 @@ button, a {
   }
 }
 
+/* 3D Manifold Synthesis Keyframes */
+@keyframes scanbeam {
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes synthPulse {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes shakeWarn {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.shake-warn {
+  animation: shakeWarn 0.4s ease-in-out;
+}
+
 /* Primary Button Hover */
 .btn-primary:hover {
   transform: translateY(-2px) scale(1.02);

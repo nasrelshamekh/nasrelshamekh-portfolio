@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { getStroke } from 'perfect-freehand'
 import { playHoverTick, playMagneticSnap, playQuantumChime } from '../../core/audio'
+import { synthesizeManifold, resetManifold } from '../../core/manifold'
 
 function toSvgPath(points) {
   if (!points || points.length < 4) return ''
@@ -20,12 +21,21 @@ export function PlaygroundSection() {
   const [temperature, setTemperature] = useState(0.7)
   const [latentDims, setLatentDims] = useState(4096)
   const [isDrawing, setIsDrawing] = useState(false)
-  const [stats, setStats] = useState({ points: 0, complexity: 'NORMAL' })
+  const [synthesisState, setSynthesisState] = useState('idle') // 'idle' | 'synthesizing' | 'success' | 'warning'
+  const [stats, setStats] = useState({
+    points: 0,
+    complexity: 'NORMAL',
+    topology: 'DEFAULT TORUS KNOT',
+    curvature: '0.00',
+  })
   const pointsRef = useRef([])
 
   const handlePointerDown = (e) => {
     e.currentTarget.setPointerCapture(e.pointerId)
     setIsDrawing(true)
+    if (synthesisState === 'success' || synthesisState === 'warning') {
+      setSynthesisState('idle')
+    }
     const rect = e.currentTarget.getBoundingClientRect()
     pointsRef.current = [[e.clientX - rect.left, e.clientY - rect.top, e.pressure || 0.5]]
   }
@@ -44,10 +54,11 @@ export function PlaygroundSection() {
       streamline: 0.35,
     })
     setStrokeD(toSvgPath(stroke))
-    setStats({
+    setStats((prev) => ({
+      ...prev,
       points: pointsRef.current.length,
       complexity: pointsRef.current.length > 50 ? 'HIGH' : 'OPTIMAL',
-    })
+    }))
   }
 
   const handlePointerUp = () => {
@@ -58,11 +69,42 @@ export function PlaygroundSection() {
     playMagneticSnap()
     pointsRef.current = []
     setStrokeD('')
-    setStats({ points: 0, complexity: 'EMPTY' })
+    setSynthesisState('idle')
+    resetManifold()
+    setStats({
+      points: 0,
+      complexity: 'EMPTY',
+      topology: 'DEFAULT TORUS KNOT',
+      curvature: '0.00',
+    })
   }
 
   const handleSynthesize = () => {
+    if (!pointsRef.current || pointsRef.current.length < 4) {
+      playMagneticSnap()
+      setSynthesisState('warning')
+      setTimeout(() => {
+        setSynthesisState('idle')
+      }, 1400)
+      return
+    }
+
+    setSynthesisState('synthesizing')
     playQuantumChime()
+
+    const rect = padRef.current?.getBoundingClientRect() || { width: 500, height: 380 }
+    const result = synthesizeManifold(pointsRef.current, rect, { temperature, latentDims })
+
+    setTimeout(() => {
+      setSynthesisState('success')
+      if (result) {
+        setStats((prev) => ({
+          ...prev,
+          topology: result.topology,
+          curvature: result.curvature,
+        }))
+      }
+    }, 650)
   }
 
   return (
@@ -109,8 +151,8 @@ export function PlaygroundSection() {
             marginTop: '12px',
           }}
         >
-          Draw a continuous vector path below. Our variable-width pencil algorithm
-          renders your physical touch with organic pressure curves and real-time GPU feedback.
+          Draw a continuous vector path below. Click <strong>Synthesize 3D Manifold</strong> to project
+          your 2D gesture directly into the floating 3D ribbon in real-time space.
         </p>
       </div>
 
@@ -137,14 +179,71 @@ export function PlaygroundSection() {
           style={{
             height: '380px',
             borderRadius: '18px',
-            border: '2px dashed rgba(255, 255, 255, 0.15)',
+            border: synthesisState === 'synthesizing'
+              ? '2px solid #00f5d4'
+              : synthesisState === 'success'
+              ? '2px solid rgba(0, 245, 212, 0.4)'
+              : '2px dashed rgba(255, 255, 255, 0.15)',
             background: 'rgba(5, 7, 15, 0.8)',
             position: 'relative',
             touchAction: 'none',
             cursor: 'crosshair',
             overflow: 'hidden',
+            transition: 'border 0.3s ease',
           }}
         >
+          {/* Holographic Laser Scanline on Synthesis */}
+          {synthesisState === 'synthesizing' && (
+            <div
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                height: '3px',
+                background: 'linear-gradient(90deg, transparent, #00f5d4 25%, #ffffff 50%, #00bbf9 75%, transparent)',
+                boxShadow: '0 0 16px #00f5d4, 0 0 32px #00bbf9',
+                animation: 'scanbeam 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                pointerEvents: 'none',
+                zIndex: 10,
+              }}
+            />
+          )}
+
+          {/* Active Status Badge in Top-Right */}
+          {synthesisState === 'success' && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '12px',
+                right: '12px',
+                padding: '4px 10px',
+                borderRadius: '9999px',
+                background: 'rgba(0, 245, 212, 0.12)',
+                border: '1px solid rgba(0, 245, 212, 0.3)',
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: '0.68rem',
+                color: '#00f5d4',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                pointerEvents: 'none',
+                zIndex: 5,
+              }}
+            >
+              <span
+                style={{
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  background: '#00f5d4',
+                  boxShadow: '0 0 8px #00f5d4',
+                  display: 'inline-block',
+                }}
+              />
+              3D MANIFOLD ACTIVE
+            </div>
+          )}
+
           <svg
             style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}
           >
@@ -152,7 +251,15 @@ export function PlaygroundSection() {
               <path
                 d={strokeD}
                 fill="#00f5d4"
-                style={{ filter: 'drop-shadow(0 0 12px rgba(0, 245, 212, 0.6))' }}
+                style={{
+                  filter:
+                    synthesisState === 'synthesizing'
+                      ? 'drop-shadow(0 0 24px #00f5d4) drop-shadow(0 0 45px #00bbf9)'
+                      : synthesisState === 'success'
+                      ? 'drop-shadow(0 0 16px rgba(0, 245, 212, 0.8))'
+                      : 'drop-shadow(0 0 12px rgba(0, 245, 212, 0.6))',
+                  transition: 'filter 0.3s ease',
+                }}
               />
             )}
           </svg>
@@ -253,7 +360,7 @@ export function PlaygroundSection() {
               />
             </div>
 
-            {/* Live Stats */}
+            {/* Live Stats HUD */}
             <div
               style={{
                 display: 'grid',
@@ -275,29 +382,83 @@ export function PlaygroundSection() {
                 <span style={{ color: '#64748b' }}>ENTROPY: </span>
                 <span style={{ color: '#00f5d4' }}>{stats.complexity}</span>
               </div>
+              <div>
+                <span style={{ color: '#64748b' }}>TOPOLOGY: </span>
+                <span style={{ color: '#cbd5e1', fontSize: '0.72rem' }}>{stats.topology}</span>
+              </div>
+              <div>
+                <span style={{ color: '#64748b' }}>CURVATURE: </span>
+                <span style={{ color: '#00bbf9' }}>{stats.curvature} rad</span>
+              </div>
             </div>
           </div>
 
-          {/* Buttons */}
+          {/* Action Buttons */}
           <div style={{ display: 'flex', gap: '14px', marginTop: '24px' }}>
             <button
               onClick={handleSynthesize}
               onMouseEnter={playHoverTick}
+              disabled={synthesisState === 'synthesizing'}
+              className={synthesisState === 'warning' ? 'shake-warn' : ''}
               style={{
                 flex: 1,
                 padding: '14px 20px',
                 borderRadius: '9999px',
-                background: '#00f5d4',
-                color: '#05070f',
+                background:
+                  synthesisState === 'warning'
+                    ? '#f43f5e'
+                    : synthesisState === 'synthesizing'
+                    ? 'linear-gradient(90deg, #00f5d4, #00bbf9, #7928ca, #00f5d4)'
+                    : synthesisState === 'success'
+                    ? 'linear-gradient(135deg, #00f5d4 0%, #059669 100%)'
+                    : '#00f5d4',
+                backgroundSize: synthesisState === 'synthesizing' ? '250% 100%' : 'auto',
+                animation: synthesisState === 'synthesizing' ? 'synthPulse 1.2s ease infinite' : 'none',
+                color: synthesisState === 'warning' ? '#ffffff' : '#05070f',
                 border: 'none',
                 fontFamily: 'Space Grotesk, sans-serif',
                 fontWeight: 700,
-                fontSize: '0.9rem',
-                cursor: 'pointer',
-                boxShadow: '0 0 20px rgba(0, 245, 212, 0.35)',
+                fontSize: '0.88rem',
+                cursor: synthesisState === 'synthesizing' ? 'wait' : 'pointer',
+                boxShadow:
+                  synthesisState === 'warning'
+                    ? '0 0 24px rgba(244, 63, 94, 0.5)'
+                    : synthesisState === 'synthesizing'
+                    ? '0 0 30px rgba(0, 245, 212, 0.7)'
+                    : synthesisState === 'success'
+                    ? '0 0 25px rgba(0, 245, 212, 0.5)'
+                    : '0 0 20px rgba(0, 245, 212, 0.35)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                transition: 'all 0.25s ease',
               }}
             >
-              SYNTHESIZE 3D MANIFOLD
+              {synthesisState === 'synthesizing' ? (
+                <>
+                  <svg
+                    style={{
+                      width: '18px',
+                      height: '18px',
+                      animation: 'spin 1s linear infinite',
+                    }}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
+                    <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83" />
+                  </svg>
+                  <span>SYNTHESIZING 3D MANIFOLD...</span>
+                </>
+              ) : synthesisState === 'success' ? (
+                <span>✓ 3D MANIFOLD ACTIVE (RE-SYNTHESIZE)</span>
+              ) : synthesisState === 'warning' ? (
+                <span>⚠ DRAW A GESTURE FIRST</span>
+              ) : (
+                <span>SYNTHESIZE 3D MANIFOLD</span>
+              )}
             </button>
             <button
               onClick={handleClear}
@@ -311,6 +472,7 @@ export function PlaygroundSection() {
                 fontFamily: 'JetBrains Mono, monospace',
                 fontSize: '0.8rem',
                 cursor: 'pointer',
+                transition: 'all 0.2s ease',
               }}
             >
               CLEAR
