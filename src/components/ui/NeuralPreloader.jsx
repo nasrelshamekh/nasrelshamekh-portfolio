@@ -183,10 +183,11 @@ export function NeuralPreloader({ onComplete }) {
           />
         </svg>
 
-        {/* Center Neural Kernel Label */}
+        {/* Neural Kernel Label shifted to the left to avoid infinity intersection */}
         <div
           style={{
             position: 'absolute',
+            transform: 'translateX(-52px)',
             fontFamily: 'JetBrains Mono, monospace',
             fontSize: '0.75rem',
             letterSpacing: '0.2em',
@@ -195,6 +196,9 @@ export function NeuralPreloader({ onComplete }) {
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
+            zIndex: 2,
+            textShadow: '0 2px 10px rgba(5, 7, 15, 0.95), 0 0 20px rgba(5, 7, 15, 0.9)',
+            pointerEvents: 'none',
           }}
         >
           <span
