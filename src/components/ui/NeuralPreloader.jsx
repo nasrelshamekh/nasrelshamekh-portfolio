@@ -183,75 +183,78 @@ export function NeuralPreloader({ onComplete }) {
           />
         </svg>
 
-        {/* Symmetrical Tri-Part Label: [Left Loop: Name] — [Center: //] — [Right Loop: Initializing] */}
+        {/* Geometrical Placement inside Infinity Loop Cavities */}
+        {/* Left Loop Cavity: Nasr Elshamekh */}
         <div
           style={{
             position: 'absolute',
-            inset: 0,
+            left: '205px',
+            top: '150px',
+            transform: 'translate(-50%, -50%)',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
+            gap: '8px',
             fontFamily: 'JetBrains Mono, monospace',
-            fontSize: '0.75rem',
-            letterSpacing: '0.18em',
+            fontSize: '0.72rem',
+            letterSpacing: '0.16em',
+            color: '#ffffff',
+            whiteSpace: 'nowrap',
             zIndex: 2,
+            textShadow: '0 2px 10px rgba(5, 7, 15, 0.95), 0 0 20px rgba(5, 7, 15, 0.9)',
             pointerEvents: 'none',
           }}
         >
-          {/* Left Loop: Nasr Elshamekh */}
-          <div
+          <span
             style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              paddingRight: '16px',
-              color: '#ffffff',
-              textShadow: '0 2px 10px rgba(5, 7, 15, 0.95), 0 0 20px rgba(5, 7, 15, 0.9)',
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              backgroundColor: '#00f5d4',
+              display: 'inline-block',
+              boxShadow: '0 0 10px #00f5d4',
             }}
-          >
-            <span
-              style={{
-                width: '6px',
-                height: '6px',
-                borderRadius: '50%',
-                backgroundColor: '#00f5d4',
-                display: 'inline-block',
-                boxShadow: '0 0 10px #00f5d4',
-              }}
-            />
-            <span>NASR ELSHAMEKH</span>
-          </div>
+          />
+          <span>NASR ELSHAMEKH</span>
+        </div>
 
-          {/* Center Intersection: // */}
-          <div
-            style={{
-              color: '#00f5d4',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              letterSpacing: '0.1em',
-              padding: '0 10px',
-              textShadow: '0 0 12px rgba(0, 245, 212, 0.8), 0 0 24px rgba(5, 7, 15, 0.95)',
-            }}
-          >
-            //
-          </div>
+        {/* Center Intersection: // */}
+        <div
+          style={{
+            position: 'absolute',
+            left: '300px',
+            top: '150px',
+            transform: 'translate(-50%, -50%)',
+            fontFamily: 'JetBrains Mono, monospace',
+            color: '#00f5d4',
+            fontWeight: 700,
+            fontSize: '0.85rem',
+            letterSpacing: '0.1em',
+            zIndex: 2,
+            textShadow: '0 0 12px rgba(0, 245, 212, 0.8), 0 0 24px rgba(5, 7, 15, 0.95)',
+            pointerEvents: 'none',
+          }}
+        >
+          //
+        </div>
 
-          {/* Right Loop: Initializing */}
-          <div
-            style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingLeft: '16px',
-              color: '#94a3b8',
-              textShadow: '0 2px 10px rgba(5, 7, 15, 0.95), 0 0 20px rgba(5, 7, 15, 0.9)',
-            }}
-          >
-            <span>INITIALIZING</span>
-          </div>
+        {/* Right Loop Cavity: Initializing */}
+        <div
+          style={{
+            position: 'absolute',
+            left: '395px',
+            top: '150px',
+            transform: 'translate(-50%, -50%)',
+            fontFamily: 'JetBrains Mono, monospace',
+            fontSize: '0.72rem',
+            letterSpacing: '0.16em',
+            color: '#94a3b8',
+            whiteSpace: 'nowrap',
+            zIndex: 2,
+            textShadow: '0 2px 10px rgba(5, 7, 15, 0.95), 0 0 20px rgba(5, 7, 15, 0.9)',
+            pointerEvents: 'none',
+          }}
+        >
+          <span>INITIALIZING</span>
         </div>
       </div>
 
