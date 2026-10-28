@@ -10,10 +10,13 @@ export function TerminalSection() {
       text: 'NASR ELSHAMEKH CLI v2.4 (React 19 + .NET 10). Type /help to inspect commands or /projects to view active deployments.',
     },
   ])
-  const scrollEndRef = useRef()
+  const logContainerRef = useRef()
+  const inputRef = useRef()
 
   useEffect(() => {
-    scrollEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (logContainerRef.current) {
+      logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight
+    }
   }, [history])
 
   const handleSubmit = (e) => {
@@ -78,6 +81,7 @@ export function TerminalSection() {
 
     setHistory(newHistory)
     setInputVal('')
+    inputRef.current?.focus()
   }
 
   return (
@@ -153,6 +157,7 @@ export function TerminalSection() {
 
         {/* Console Log Buffer */}
         <div
+          ref={logContainerRef}
           style={{
             padding: '24px',
             minHeight: '260px',
@@ -194,7 +199,6 @@ export function TerminalSection() {
               )}
             </div>
           ))}
-          <div ref={scrollEndRef} />
         </div>
 
         {/* Input Form */}
@@ -220,6 +224,7 @@ export function TerminalSection() {
             &gt;
           </span>
           <input
+            ref={inputRef}
             type="text"
             value={inputVal}
             onChange={(e) => setInputVal(e.target.value)}

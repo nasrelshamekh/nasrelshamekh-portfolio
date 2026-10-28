@@ -28,8 +28,8 @@ export function NeuralLattice() {
       return {
         origin: new THREE.Vector3(x, y, z),
         pos: new THREE.Vector3(x, y, z),
-        // Ultra-slow harmonic drift (barely perceptible cosmic drift)
-        speed: 0.015 + Math.random() * 0.025,
+        // Gentle harmonic drift speed (soothing starlight drift)
+        speed: 0.35 + Math.random() * 0.35,
         offset: Math.random() * Math.PI * 2,
         scale: 0.018 + Math.random() * 0.03,
       }
@@ -54,18 +54,18 @@ export function NeuralLattice() {
     const t = state.clock.getElapsedTime()
     const d = dummy.current
 
-    // Ultra-slow cosmic rotation (almost static, very peaceful)
-    mesh.rotation.y = t * 0.002
-    mesh.rotation.x = Math.sin(t * 0.001) * 0.01
+    // Slow, serene cosmic rotation (~78s per full revolution)
+    mesh.rotation.y = t * 0.08
+    mesh.rotation.x = Math.sin(t * 0.04) * 0.03
 
     // Soft cursor repulsion
     const mouseX = pointer.ndcX * 3
     const mouseY = pointer.ndcY * 2
 
     particles.current.forEach((p, i) => {
-      // Extremely gentle micro-oscillation
-      const py = p.origin.y + Math.sin(t * p.speed + p.offset) * 0.06
-      const px = p.origin.x + Math.cos(t * p.speed + p.offset) * 0.04
+      // Gentle micro-oscillation
+      const py = p.origin.y + Math.sin(t * p.speed + p.offset) * 0.08
+      const px = p.origin.x + Math.cos(t * p.speed + p.offset) * 0.06
       const pz = p.origin.z
 
       // Distance to cursor

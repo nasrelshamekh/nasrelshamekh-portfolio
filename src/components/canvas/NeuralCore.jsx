@@ -97,27 +97,27 @@ export function NeuralCore() {
     outerGroup.current.position.x += (targetX - outerGroup.current.position.x) * (1 - Math.exp(-1.5 * delta))
     outerGroup.current.position.y += (targetY - outerGroup.current.position.y) * (1 - Math.exp(-1.5 * delta))
 
-    // 3. Ultra-slow, barely perceptible cosmic rotation
-    outerGroup.current.rotation.y += delta * 0.008
-    outerGroup.current.rotation.x += delta * 0.004
+    // 3. Majestic, cinematic slow rotation (~35s per full revolution)
+    outerGroup.current.rotation.y += delta * 0.18
+    outerGroup.current.rotation.x += delta * 0.08
 
     // 4. Spider-verse dual clock: inner core breathes gently on twos (12 fps)
     if (innerMesh.current) {
       const stepTime = twos.frame / 12
-      const pulse = 1 + Math.sin(stepTime * 0.4) * 0.02
+      const pulse = 1 + Math.sin(stepTime * 0.6) * 0.02
       innerMesh.current.scale.set(pulse, pulse, pulse)
-      innerMesh.current.rotation.z = stepTime * 0.012
+      innerMesh.current.rotation.z = stepTime * 0.04
     }
 
     // 5. Subtle core counter-rotation
     if (coreMesh.current) {
-      coreMesh.current.rotation.y -= delta * 0.005
+      coreMesh.current.rotation.y -= delta * 0.12
     }
 
     // 6. Gentle orbital ring precession
     if (ringsRef.current) {
-      ringsRef.current.rotation.y += delta * 0.006
-      ringsRef.current.rotation.z += delta * 0.003
+      ringsRef.current.rotation.y += delta * 0.14
+      ringsRef.current.rotation.z += delta * 0.07
     }
   })
 
@@ -125,7 +125,7 @@ export function NeuralCore() {
     <group ref={choreoGroup} position={[0, 0, 0]}>
       <group ref={outerGroup} position={[0, 0, 0]}>
         {/* Serene zero-g ambient float */}
-        <Float speed={0.2} rotationIntensity={0.08} floatIntensity={0.12}>
+        <Float speed={0.8} rotationIntensity={0.06} floatIntensity={0.1}>
           
           {/* Outer Organic Neural Core - slow, liquid morph */}
           <mesh ref={coreMesh} scale={1.4}>
@@ -133,8 +133,8 @@ export function NeuralCore() {
             <MeshDistortMaterial
               color="#2a45ff"
               emissive="#0d1f73"
-              distort={0.15}
-              speed={0.22}
+              distort={0.14}
+              speed={0.8}
               roughness={0.15}
               metalness={0.9}
               clearcoat={1}

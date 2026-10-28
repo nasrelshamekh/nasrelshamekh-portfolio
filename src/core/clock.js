@@ -107,7 +107,7 @@ export const startMasterClock = () => {
 
     // D. Advance WebGL Canvas last (it reads updated scroll & O transform)
     try {
-      advance(time * 1000)
+      advance(time)
     } catch {
       // If canvas is not yet mounted, advance will gracefully no-op
     }

@@ -23,8 +23,8 @@ export function InteractiveRibbon() {
   useFrame((state, delta) => {
     if (!meshRef.current) return
     const t = state.clock.getElapsedTime()
-    meshRef.current.rotation.y = t * 0.003
-    meshRef.current.rotation.z = Math.sin(t * 0.002) * 0.008
+    meshRef.current.rotation.y = t * 0.08
+    meshRef.current.rotation.z = Math.sin(t * 0.04) * 0.06
   })
 
   return (
