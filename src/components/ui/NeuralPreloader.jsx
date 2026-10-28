@@ -183,35 +183,75 @@ export function NeuralPreloader({ onComplete }) {
           />
         </svg>
 
-        {/* Neural Kernel Label shifted to the left to avoid infinity intersection */}
+        {/* Symmetrical Tri-Part Label: [Left Loop: Name] — [Center: //] — [Right Loop: Initializing] */}
         <div
           style={{
             position: 'absolute',
-            transform: 'translateX(-52px)',
-            fontFamily: 'JetBrains Mono, monospace',
-            fontSize: '0.75rem',
-            letterSpacing: '0.2em',
-            color: '#93c5fd',
-            textTransform: 'uppercase',
+            inset: 0,
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
+            justifyContent: 'center',
+            fontFamily: 'JetBrains Mono, monospace',
+            fontSize: '0.75rem',
+            letterSpacing: '0.18em',
             zIndex: 2,
-            textShadow: '0 2px 10px rgba(5, 7, 15, 0.95), 0 0 20px rgba(5, 7, 15, 0.9)',
             pointerEvents: 'none',
           }}
         >
-          <span
+          {/* Left Loop: Nasr Elshamekh */}
+          <div
             style={{
-              width: '6px',
-              height: '6px',
-              borderRadius: '50%',
-              backgroundColor: '#00f5d4',
-              display: 'inline-block',
-              boxShadow: '0 0 10px #00f5d4',
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              paddingRight: '16px',
+              color: '#ffffff',
+              textShadow: '0 2px 10px rgba(5, 7, 15, 0.95), 0 0 20px rgba(5, 7, 15, 0.9)',
             }}
-          />
-          NASR ELSHAMEKH // INITIALIZING
+          >
+            <span
+              style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                backgroundColor: '#00f5d4',
+                display: 'inline-block',
+                boxShadow: '0 0 10px #00f5d4',
+              }}
+            />
+            <span>NASR ELSHAMEKH</span>
+          </div>
+
+          {/* Center Intersection: // */}
+          <div
+            style={{
+              color: '#00f5d4',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              letterSpacing: '0.1em',
+              padding: '0 10px',
+              textShadow: '0 0 12px rgba(0, 245, 212, 0.8), 0 0 24px rgba(5, 7, 15, 0.95)',
+            }}
+          >
+            //
+          </div>
+
+          {/* Right Loop: Initializing */}
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingLeft: '16px',
+              color: '#94a3b8',
+              textShadow: '0 2px 10px rgba(5, 7, 15, 0.95), 0 0 20px rgba(5, 7, 15, 0.9)',
+            }}
+          >
+            <span>INITIALIZING</span>
+          </div>
         </div>
       </div>
 
