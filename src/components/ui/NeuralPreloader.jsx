@@ -223,6 +223,9 @@ export function NeuralPreloader({ onComplete }) {
             left: '410px',
             top: '150px',
             transform: 'translate(-50%, -50%)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
             fontFamily: 'JetBrains Mono, monospace',
             fontSize: '0.72rem',
             letterSpacing: '0.15em',
@@ -234,6 +237,16 @@ export function NeuralPreloader({ onComplete }) {
           }}
         >
           <span>INITIALIZING</span>
+          <span
+            style={{
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              backgroundColor: '#00f5d4',
+              display: 'inline-block',
+              boxShadow: '0 0 10px #00f5d4',
+            }}
+          />
         </div>
       </div>
 
