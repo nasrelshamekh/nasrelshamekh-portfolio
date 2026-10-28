@@ -183,12 +183,11 @@ export function NeuralPreloader({ onComplete }) {
           />
         </svg>
 
-        {/* Geometrical Placement inside Infinity Loop Cavities */}
-        {/* Left Loop Cavity: Nasr Elshamekh */}
+        {/* Centered inside Left Loop: Nasr Elshamekh */}
         <div
           style={{
             position: 'absolute',
-            left: '205px',
+            left: '190px',
             top: '150px',
             transform: 'translate(-50%, -50%)',
             display: 'flex',
@@ -196,7 +195,7 @@ export function NeuralPreloader({ onComplete }) {
             gap: '8px',
             fontFamily: 'JetBrains Mono, monospace',
             fontSize: '0.72rem',
-            letterSpacing: '0.16em',
+            letterSpacing: '0.15em',
             color: '#ffffff',
             whiteSpace: 'nowrap',
             zIndex: 2,
@@ -217,36 +216,16 @@ export function NeuralPreloader({ onComplete }) {
           <span>NASR ELSHAMEKH</span>
         </div>
 
-        {/* Center Intersection: // */}
+        {/* Centered inside Right Loop: Initializing */}
         <div
           style={{
             position: 'absolute',
-            left: '300px',
-            top: '150px',
-            transform: 'translate(-50%, -50%)',
-            fontFamily: 'JetBrains Mono, monospace',
-            color: '#00f5d4',
-            fontWeight: 700,
-            fontSize: '0.85rem',
-            letterSpacing: '0.1em',
-            zIndex: 2,
-            textShadow: '0 0 12px rgba(0, 245, 212, 0.8), 0 0 24px rgba(5, 7, 15, 0.95)',
-            pointerEvents: 'none',
-          }}
-        >
-          //
-        </div>
-
-        {/* Right Loop Cavity: Initializing */}
-        <div
-          style={{
-            position: 'absolute',
-            left: '395px',
+            left: '410px',
             top: '150px',
             transform: 'translate(-50%, -50%)',
             fontFamily: 'JetBrains Mono, monospace',
             fontSize: '0.72rem',
-            letterSpacing: '0.16em',
+            letterSpacing: '0.15em',
             color: '#94a3b8',
             whiteSpace: 'nowrap',
             zIndex: 2,
