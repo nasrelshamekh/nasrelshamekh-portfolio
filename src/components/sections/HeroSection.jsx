@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
-import gsap from 'gsap-trial'
-import { SplitText } from 'gsap-trial/SplitText'
+import gsap from 'gsap'
+import { SplitText } from 'gsap/SplitText'
 import { lenis } from '../../core/clock'
 import { playHoverTick, playMagneticSnap } from '../../core/audio'
 

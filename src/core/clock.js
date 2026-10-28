@@ -1,5 +1,5 @@
-import gsap from 'gsap-trial'
-import { ScrollTrigger } from 'gsap-trial/ScrollTrigger'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import { advance } from '@react-three/fiber'
 import { updateScrollAudioVelocity } from './audio'

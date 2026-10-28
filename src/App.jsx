@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import gsap from 'gsap-trial'
-import { ScrollTrigger } from 'gsap-trial/ScrollTrigger'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { startMasterClock } from './core/clock'
 
 gsap.registerPlugin(ScrollTrigger)

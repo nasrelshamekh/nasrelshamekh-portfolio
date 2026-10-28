@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
-import gsap from 'gsap-trial'
-import { ScrollTrigger } from 'gsap-trial/ScrollTrigger'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { playHoverTick } from '../../core/audio'
 
 gsap.registerPlugin(ScrollTrigger)

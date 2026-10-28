@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import { getStroke } from 'perfect-freehand'
-import gsap from 'gsap-trial'
+import gsap from 'gsap'
 import { registerOnTwos, handOff } from '../../core/clock'
 import { playNeuralPulse } from '../../core/audio'
 

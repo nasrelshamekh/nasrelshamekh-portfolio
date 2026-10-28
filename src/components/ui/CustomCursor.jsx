@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import gsap from 'gsap-trial'
+import gsap from 'gsap'
 import { pointer, follow } from '../../core/clock'
 
 export function CustomCursor() {
