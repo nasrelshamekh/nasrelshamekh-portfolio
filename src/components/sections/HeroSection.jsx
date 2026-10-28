@@ -173,6 +173,7 @@ export function HeroSection() {
     <section
       ref={containerRef}
       id="hero"
+      className="hero-section"
       style={{
         position: 'relative',
         minHeight: '100vh',
@@ -189,9 +190,11 @@ export function HeroSection() {
       {/* Telemetry Status Strip with Apple AI flowing chromatic border */}
       <div
         ref={telemetryRef}
-        className="apple-ai-border"
+        className="apple-ai-border telemetry-strip"
         style={{
           display: 'inline-flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
           alignItems: 'center',
           gap: '12px',
           padding: '8px 20px',
@@ -203,31 +206,34 @@ export function HeroSection() {
           fontSize: '0.75rem',
           letterSpacing: '0.12em',
           color: '#94a3b8',
+          maxWidth: 'calc(100vw - 32px)',
         }}
       >
         <span style={{ color: '#00f5d4' }}>● NASR ELSHAMEKH</span>
-        <span style={{ opacity: 0.3 }}>|</span>
+        <span className="telemetry-sep" style={{ opacity: 0.3 }}>|</span>
         <span>FULL-STACK ARCHITECT</span>
-        <span style={{ opacity: 0.3 }}>|</span>
+        <span className="telemetry-sep" style={{ opacity: 0.3 }}>|</span>
         <span>REACT 19 • .NET 10</span>
-        <span style={{ opacity: 0.3 }}>|</span>
+        <span className="telemetry-sep" style={{ opacity: 0.3 }}>|</span>
         <span style={{ color: '#00f5d4' }}>AVAILABLE FOR BUILDS</span>
       </div>
 
       {/* Main Kinetic Title with Interactive Hover & 3D Char Splits */}
       <h1
         ref={titleRef}
+        className="hero-title"
         style={{
           fontFamily: 'Syne, sans-serif',
-          fontSize: 'clamp(2.5rem, 6.0vw, 5.8rem)',
+          fontSize: 'clamp(1.85rem, 6.2vw, 5.8rem)',
           fontWeight: 800,
-          lineHeight: 1.04,
+          lineHeight: 1.05,
           letterSpacing: '-0.025em',
           color: '#ffffff',
           maxWidth: '1260px',
           width: '100%',
           margin: '0 auto 28px',
           textTransform: 'uppercase',
+          textAlign: 'center',
           willChange: 'transform',
         }}
       >

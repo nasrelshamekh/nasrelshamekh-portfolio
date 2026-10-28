@@ -219,6 +219,101 @@ button, a {
   border-color: rgba(255, 255, 255, 0.18) !important;
 }
 
+/* Header Responsive Navigation */
+.header-desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.header-desktop-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-mobile-right {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 12px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+@keyframes mobileMenuFade {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.mobile-menu-panel {
+  animation: mobileMenuFade 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (max-width: 900px) {
+  .header-desktop-nav {
+    display: none !important;
+  }
+  .header-desktop-actions {
+    display: none !important;
+  }
+  .header-mobile-right {
+    display: flex !important;
+  }
+  .brand-container {
+    padding-right: 0 !important;
+    border-right: none !important;
+  }
+  .glass-dock {
+    width: 100% !important;
+    max-width: 760px !important;
+    justify-content: space-between !important;
+    padding: 8px 18px !important;
+    gap: 8px !important;
+  }
+  .mobile-menu-panel {
+    max-width: 760px !important;
+  }
+  .brand-text {
+    font-size: 0.78rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-section {
+    padding: 100px 16px 40px !important;
+  }
+  .hero-title {
+    font-size: clamp(1.75rem, 8.2vw, 2.35rem) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -0.02em !important;
+  }
+  .telemetry-strip {
+    font-size: 0.68rem !important;
+    padding: 6px 12px !important;
+    gap: 6px !important;
+    border-radius: 16px !important;
+  }
+  .telemetry-sep {
+    display: none !important;
+  }
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .manifesto-row {
