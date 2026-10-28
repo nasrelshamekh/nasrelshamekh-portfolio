@@ -15,6 +15,13 @@ export const lenis = new Lenis({
   touchMultiplier: 1.5,
 })
 
+if (typeof window !== 'undefined') {
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual'
+  }
+  window.scrollTo(0, 0)
+}
+
 // Bind Lenis scroll events to GSAP ScrollTrigger
 lenis.on('scroll', ScrollTrigger.update)
 gsap.ticker.lagSmoothing(0)

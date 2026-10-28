@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { startMasterClock } from './core/clock'
+import { startMasterClock, lenis } from './core/clock'
 
 gsap.registerPlugin(ScrollTrigger)
 import { CanvasStage } from './components/canvas/CanvasStage'
@@ -20,13 +20,24 @@ export default function App() {
   const [preloaderFinished, setPreloaderFinished] = useState(false)
 
   useEffect(() => {
+    // Force browser to start at top on reload
+    if (typeof window !== 'undefined') {
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual'
+      }
+      window.scrollTo(0, 0)
+      lenis.scrollTo(0, { immediate: true })
+    }
+
     // Start unified GSAP ticker (Lenis -> ScrollTrigger -> Twos -> R3F Advance)
     startMasterClock()
   }, [])
 
   useEffect(() => {
     if (preloaderFinished) {
-      // Re-calculate trigger offsets now that the DOM is fully unblocked
+      // Ensure we remain firmly at origin and refresh triggers
+      window.scrollTo(0, 0)
+      lenis.scrollTo(0, { immediate: true })
       requestAnimationFrame(() => {
         ScrollTrigger.refresh()
       })

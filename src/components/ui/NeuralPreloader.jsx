@@ -1,51 +1,30 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
-import { getStroke } from 'perfect-freehand'
 import gsap from 'gsap'
-import { registerOnTwos, handOff } from '../../core/clock'
+import { handOff, lenis } from '../../core/clock'
 import { playNeuralPulse } from '../../core/audio'
 
-// Helper to convert getStroke polygon coordinates to SVG path string
-function toSvgPath(points) {
-  if (!points || points.length < 4) return ''
-  const f = (n) => Number(n).toFixed(1)
-  const mid = (a, b) => `${f((a[0] + b[0]) / 2)},${f((a[1] + b[1]) / 2)}`
-  let d = `M ${f(points[0][0])} ${f(points[0][1])} Q `
-  for (let i = 0; i < points.length; i++) {
-    const next = points[(i + 1) % points.length]
-    d += `${f(points[i][0])} ${f(points[i][1])} ${mid(points[i], next)} `
+// Mathematically perfect Bernoulli Lemniscate (Infinity Loop) centered at (300, 150)
+const INFINITY_PATH_D = (() => {
+  const count = 300
+  const w = 220
+  const h = 110
+  const pts = []
+  for (let i = 0; i <= count; i++) {
+    const t = (i / count) * Math.PI * 2
+    const x = (w * Math.cos(t)) / (1 + Math.sin(t) * Math.sin(t)) + 300
+    const y = (h * Math.sin(t) * Math.cos(t)) / (1 + Math.sin(t) * Math.sin(t)) + 150
+    pts.push(`${x.toFixed(1)},${y.toFixed(1)}`)
   }
-  return d + ' Z'
-}
-
-// Pseudo-random seeded hash
-const rnd = (n) => {
-  const s = Math.sin(n * 127.1) * 43758.5453
-  return s - Math.floor(s)
-}
+  return `M ${pts[0]} L ${pts.slice(1).join(' ')} Z`
+})()
 
 export function NeuralPreloader({ onComplete }) {
   const [visible, setVisible] = useState(true)
-  const [pathD, setPathD] = useState('')
   const containerRef = useRef()
-  const progressRef = useRef({ val: 0 })
+  const pathRef = useRef()
+  const glowPathRef = useRef()
+  const tracerRef = useRef()
   const isDismissing = useRef(false)
-
-  // Generate an organic Lissajous / Infinity loop of points
-  const rawPoints = useRef([])
-
-  useEffect(() => {
-    const pts = []
-    const count = 100
-    const w = 260
-    const h = 130
-    for (let i = 0; i <= count; i++) {
-      const t = (i / count) * Math.PI * 2
-      const x = (w * Math.cos(t)) / (1 + Math.sin(t) * Math.sin(t)) + 300
-      const y = (h * Math.sin(t) * Math.cos(t)) / (1 + Math.sin(t) * Math.sin(t)) + 150
-      pts.push([x, y, 0.5])
-    }
-    rawPoints.current = pts
-  }, [])
 
   const dismiss = useCallback(() => {
     if (isDismissing.current) return
@@ -54,11 +33,16 @@ export function NeuralPreloader({ onComplete }) {
     playNeuralPulse()
     handOff('gl')
 
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0)
+      lenis.scrollTo(0, { immediate: true })
+    }
+
     if (containerRef.current) {
       gsap.to(containerRef.current, {
         opacity: 0,
-        scale: 1.05,
-        duration: 0.6,
+        scale: 1.04,
+        duration: 0.55,
         ease: 'power3.inOut',
         onComplete: () => {
           setVisible(false)
@@ -72,52 +56,50 @@ export function NeuralPreloader({ onComplete }) {
   }, [onComplete])
 
   useEffect(() => {
-    // 1. Animate progress 0 -> 1 over 1.5 seconds, then dismiss
-    const tween = gsap.to(progressRef.current, {
+    const path = pathRef.current
+    if (!path) return
+
+    const length = path.getTotalLength()
+
+    // Initialize stroke dash for hardware-accelerated drawing
+    path.style.strokeDasharray = `${length} ${length}`
+    path.style.strokeDashoffset = length
+
+    if (glowPathRef.current) {
+      glowPathRef.current.style.strokeDasharray = `${length} ${length}`
+      glowPathRef.current.style.strokeDashoffset = length
+    }
+
+    const progressObj = { val: 0 }
+
+    // Silky smooth 60fps/120fps hardware-accelerated tracer
+    const tween = gsap.to(progressObj, {
       val: 1,
-      duration: 1.5,
+      duration: 1.6,
       ease: 'power2.inOut',
+      onUpdate: () => {
+        const offset = length * (1 - progressObj.val)
+        if (path) path.style.strokeDashoffset = offset
+        if (glowPathRef.current) glowPathRef.current.style.strokeDashoffset = offset
+
+        if (tracerRef.current && progressObj.val > 0) {
+          const pt = path.getPointAtLength(length * progressObj.val)
+          tracerRef.current.setAttribute('cx', pt.x)
+          tracerRef.current.setAttribute('cy', pt.y)
+        }
+      },
       onComplete: () => {
         dismiss()
       },
     })
 
-    // 2. Safety timeout: under no circumstances should it stay more than 2.2s
     const safetyTimer = setTimeout(() => {
       dismiss()
     }, 2200)
 
-    // 3. Spider-Verse 12 fps clock: re-calculate boil and progressive stroke
-    const unregister = registerOnTwos((frame) => {
-      if (isDismissing.current || rawPoints.current.length === 0) return
-
-      const progress = progressRef.current.val
-      const seed = frame % 3
-      const upTo = Math.max(3, Math.ceil(rawPoints.current.length * progress))
-
-      // Apply 3-seed boil (Research F2: 0.8px offset without SVG filters)
-      const currentPts = rawPoints.current.slice(0, upTo).map(([x, y, p], i) => [
-        x + (rnd(seed * 131 + i) - 0.5) * 1.6,
-        y + (rnd(seed * 173 + i * 1.7) - 0.5) * 1.6,
-        p,
-      ])
-
-      const strokeOutline = getStroke(currentPts, {
-        size: 5,
-        thinning: 0.5,
-        smoothing: 0.6,
-        streamline: 0.4,
-        start: { taper: 20 },
-        end: { taper: 25 },
-      })
-
-      setPathD(toSvgPath(strokeOutline))
-    })
-
     return () => {
       tween.kill()
       clearTimeout(safetyTimer)
-      unregister()
     }
   }, [dismiss])
 
@@ -146,16 +128,58 @@ export function NeuralPreloader({ onComplete }) {
           viewBox="0 0 600 300"
           style={{ width: '100%', height: '100%', overflow: 'visible' }}
         >
-          {/* Subtle ghost trace */}
+          <defs>
+            <linearGradient id="infGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#00f5d4" />
+              <stop offset="50%" stopColor="#00bbf9" />
+              <stop offset="100%" stopColor="#7928ca" />
+            </linearGradient>
+            <filter id="tracerGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* Faint architectural guide track */}
           <path
-            d={pathD}
-            fill="#3b82f6"
-            style={{ opacity: 0.25, filter: 'blur(8px)' }}
+            d={INFINITY_PATH_D}
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.08)"
+            strokeWidth="2"
           />
-          {/* Main animated variable stroke on twos */}
+
+          {/* Glowing blur halo */}
           <path
-            d={pathD}
-            fill="#60a5fa"
+            ref={glowPathRef}
+            d={INFINITY_PATH_D}
+            fill="none"
+            stroke="url(#infGrad)"
+            strokeWidth="8"
+            strokeLinecap="round"
+            style={{ opacity: 0.35, filter: 'blur(8px)' }}
+          />
+
+          {/* Main silky gradient stroke */}
+          <path
+            ref={pathRef}
+            d={INFINITY_PATH_D}
+            fill="none"
+            stroke="url(#infGrad)"
+            strokeWidth="3.5"
+            strokeLinecap="round"
+          />
+
+          {/* Glowing tracer dot riding at the leading edge */}
+          <circle
+            ref={tracerRef}
+            cx="520"
+            cy="150"
+            r="5"
+            fill="#00f5d4"
+            filter="url(#tracerGlow)"
           />
         </svg>
 
@@ -178,9 +202,9 @@ export function NeuralPreloader({ onComplete }) {
               width: '6px',
               height: '6px',
               borderRadius: '50%',
-              backgroundColor: '#60a5fa',
+              backgroundColor: '#00f5d4',
               display: 'inline-block',
-              boxShadow: '0 0 10px #60a5fa',
+              boxShadow: '0 0 10px #00f5d4',
             }}
           />
           NASR ELSHAMEKH // INITIALIZING
@@ -196,7 +220,7 @@ export function NeuralPreloader({ onComplete }) {
           color: '#64748b',
         }}
       >
-        DUAL-CLOCK RAF // REACT 19 + .NET 10 // 120 FPS
+        FULL-STACK ARCHITECTURE // REACT 19 + .NET 10 // 120 FPS
       </div>
     </div>
   )
