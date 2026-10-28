@@ -26,13 +26,13 @@ export function NeuralCore() {
   })
 
   useGSAP(() => {
-    // Master scroll scrub timeline orchestrating the 3D core's position per chapter
+    // Master scroll scrub timeline orchestrating the 3D core's position per chapter seamlessly without overlaps
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: 'main',
         start: 'top top',
         end: 'bottom bottom',
-        scrub: 1.4,
+        scrub: 1.2,
       },
     })
 
@@ -43,49 +43,58 @@ export function NeuralCore() {
       z: -1.0,
       scale: 0.85,
       rotZ: 0.1,
-      ease: 'power1.inOut',
-    }, 0.12)
-
+      ease: 'sine.inOut',
+      duration: 1,
+    })
+    // Rest framing cards during project scroll
+    .to(scrollTransform.current, { duration: 0.4 })
     // Chapter 02: Manifesto (Core glides to the left behind the manifesto points)
-    tl.to(scrollTransform.current, {
+    .to(scrollTransform.current, {
       x: -2.1,
       y: 0.4,
       z: -1.3,
       scale: 0.78,
       rotZ: -0.08,
-      ease: 'power1.inOut',
-    }, 0.38)
-
+      ease: 'sine.inOut',
+      duration: 1,
+    })
+    // Rest behind manifesto
+    .to(scrollTransform.current, { duration: 0.4 })
     // Chapter 03: Latent Playground (Core centers above the drawing pad)
-    tl.to(scrollTransform.current, {
+    .to(scrollTransform.current, {
       x: 0,
       y: 1.5,
       z: -0.7,
       scale: 0.82,
       rotZ: 0,
-      ease: 'power1.inOut',
-    }, 0.62)
-
+      ease: 'sine.inOut',
+      duration: 1,
+    })
+    // Rest above drawing pad
+    .to(scrollTransform.current, { duration: 0.4 })
     // Chapter 04 & 05: Matrix, Terminal & Footer (Core recedes into subtle deep space)
-    tl.to(scrollTransform.current, {
+    .to(scrollTransform.current, {
       x: 0,
       y: -0.7,
       z: -2.2,
       scale: 0.6,
       rotZ: 0.05,
-      ease: 'power1.inOut',
-    }, 0.85)
+      ease: 'sine.inOut',
+      duration: 1,
+    })
   })
 
   useFrame((state, delta) => {
-    // 1. Update Scroll Choreography Group
+    // 1. Update Scroll Choreography Group with frame-rate independent smooth damping
     if (choreoGroup.current) {
       const choreo = choreoGroup.current
-      choreo.position.x = scrollTransform.current.x
-      choreo.position.y = scrollTransform.current.y
-      choreo.position.z = scrollTransform.current.z
-      choreo.scale.setScalar(scrollTransform.current.scale)
-      choreo.rotation.z = scrollTransform.current.rotZ
+      const lerp = 1 - Math.exp(-6 * delta)
+      choreo.position.x += (scrollTransform.current.x - choreo.position.x) * lerp
+      choreo.position.y += (scrollTransform.current.y - choreo.position.y) * lerp
+      choreo.position.z += (scrollTransform.current.z - choreo.position.z) * lerp
+      const curScale = choreo.scale.x
+      choreo.scale.setScalar(curScale + (scrollTransform.current.scale - curScale) * lerp)
+      choreo.rotation.z += (scrollTransform.current.rotZ - choreo.rotation.z) * lerp
     }
 
     if (!outerGroup.current) return
@@ -94,8 +103,9 @@ export function NeuralCore() {
     const targetX = pointer.ndcX * 0.3
     const targetY = pointer.ndcY * 0.2
 
-    outerGroup.current.position.x += (targetX - outerGroup.current.position.x) * (1 - Math.exp(-1.5 * delta))
-    outerGroup.current.position.y += (targetY - outerGroup.current.position.y) * (1 - Math.exp(-1.5 * delta))
+    const cursorLerp = 1 - Math.exp(-4 * delta)
+    outerGroup.current.position.x += (targetX - outerGroup.current.position.x) * cursorLerp
+    outerGroup.current.position.y += (targetY - outerGroup.current.position.y) * cursorLerp
 
     // 3. Majestic, cinematic slow rotation (~35s per full revolution)
     outerGroup.current.rotation.y += delta * 0.18
