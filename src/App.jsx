@@ -1,78 +1,109 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { startMasterClock, lenis } from './core/clock'
+
+import { Preloader } from './components/Preloader'
+import { Cursor } from './components/Cursor'
+import { Navbar } from './components/Navbar'
+import { AmbientMesh } from './components/AmbientMesh'
+import { Hero } from './components/Hero'
+import { Philosophy } from './components/Philosophy'
+import { Projects } from './components/Projects'
+import { Skills } from './components/Skills'
+import { Contact } from './components/Contact'
 
 gsap.registerPlugin(ScrollTrigger)
-import { CanvasStage } from './components/canvas/CanvasStage'
-import { NeuralPreloader } from './components/ui/NeuralPreloader'
-import { CustomCursor } from './components/ui/CustomCursor'
-import { Header } from './components/ui/Header'
-import { HeroSection } from './components/sections/HeroSection'
-import { ProjectsSection } from './components/sections/ProjectsSection'
-import { ManifestoSection } from './components/sections/ManifestoSection'
-import { PlaygroundSection } from './components/sections/PlaygroundSection'
-import { ArchitectureMatrix } from './components/sections/ArchitectureMatrix'
-import { TerminalSection } from './components/sections/TerminalSection'
-import { FooterSection } from './components/sections/FooterSection'
 
 export default function App() {
-  const [preloaderFinished, setPreloaderFinished] = useState(false)
+  const [bootFinished, setBootFinished] = useState(false)
+  const lenisRef = useRef(null)
 
   useEffect(() => {
-    // Force browser to start at top on reload
-    if (typeof window !== 'undefined') {
-      if ('scrollRestoration' in history) {
-        history.scrollRestoration = 'manual'
-      }
-      window.scrollTo(0, 0)
-      lenis.scrollTo(0, { immediate: true })
+    // 1. Initialize Lenis Smooth Scroll
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      touchMultiplier: 2,
+    })
+
+    lenisRef.current = lenis
+
+    // 2. Synchronize Lenis with GSAP ScrollTrigger
+    lenis.on('scroll', ScrollTrigger.update)
+
+    const tickerCb = (time) => {
+      lenis.raf(time * 1000)
     }
 
-    // Start unified GSAP ticker (Lenis -> ScrollTrigger -> Twos -> R3F Advance)
-    startMasterClock()
+    gsap.ticker.add(tickerCb)
+    gsap.ticker.lagSmoothing(0)
+
+    // Manual scroll reset on mount
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual'
+    }
+    window.scrollTo(0, 0)
+
+    return () => {
+      gsap.ticker.remove(tickerCb)
+      lenis.destroy()
+    }
   }, [])
 
-  useEffect(() => {
-    if (preloaderFinished) {
-      // Ensure we remain firmly at origin and refresh triggers
-      window.scrollTo(0, 0)
-      lenis.scrollTo(0, { immediate: true })
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh()
-      })
+  // Smooth navigation handler
+  const handleNavigate = (targetId) => {
+    if (targetId === 'hero') {
+      lenisRef.current?.scrollTo(0, { duration: 1.2 })
+      return
     }
-  }, [preloaderFinished])
+    const element = document.getElementById(targetId)
+    if (element) {
+      lenisRef.current?.scrollTo(element, { offset: -60, duration: 1.4 })
+    }
+  }
+
+  const handleScrollTop = () => {
+    lenisRef.current?.scrollTo(0, { duration: 1.5 })
+  }
 
   return (
-    <div className="app-root" style={{ position: 'relative', width: '100%', minHeight: '100vh', background: '#05070f' }}>
-      {/* 0. Research F2 / F4 Preloader (Frame zero on twos) */}
-      <NeuralPreloader
-        onComplete={() => setPreloaderFinished(true)}
-      />
+    <div
+      style={{
+        position: 'relative',
+        minHeight: '100vh',
+        width: '100%',
+        backgroundColor: '#0a0b0e',
+        color: '#f8fafc',
+        overflow: 'hidden',
+      }}
+    >
+      {/* 0. Awwwards Initialization Boot Sequence */}
+      {!bootFinished && (
+        <Preloader onComplete={() => setBootFinished(true)} />
+      )}
 
-      {/* 1. Precision Crosshair Cursor */}
-      <CustomCursor />
+      {/* 1. Kinetic Precision Custom Cursor */}
+      <Cursor />
 
-      {/* 2. Floating Dynamic Island Header */}
-      <Header />
+      {/* 2. Interactive Subtle Network Canvas Background (No Space Atoms) */}
+      <AmbientMesh />
 
-      {/* Skiper 41: Progressive Blur Masks for Cinematic Dissolve */}
-      <div className="progressive-blur-top" />
-      <div className="progressive-blur-bottom" />
+      {/* 3. Progressive Edge Blur Masks */}
+      <div className="blur-edge-top" />
+      <div className="blur-edge-bottom" />
 
-      {/* 3. Research F1 / F4 Background Canvas (Single RAF clock, frameloop="never") */}
-      <CanvasStage />
+      {/* 4. Floating Minimalist Navigation Dock */}
+      <Navbar onNavigate={handleNavigate} />
 
-      {/* 4. DOM Kinetic Typography & Layout Flow */}
+      {/* 5. Main Content Story Flow */}
       <main style={{ position: 'relative', zIndex: 1, width: '100%' }}>
-        <HeroSection />
-        <ProjectsSection />
-        <ManifestoSection />
-        <PlaygroundSection />
-        <ArchitectureMatrix />
-        <TerminalSection />
-        <FooterSection />
+        <Hero onNavigate={handleNavigate} />
+        <Philosophy />
+        <Projects />
+        <Skills />
+        <Contact onScrollTop={handleScrollTop} />
       </main>
     </div>
   )
