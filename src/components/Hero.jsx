@@ -1,291 +1,490 @@
-import React, { useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
-import { SplitText } from 'gsap/SplitText'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { Terminal, Shield, Cpu, Activity, CornerDownRight } from 'lucide-react'
+import { sound } from '../utils/soundEngine'
 
-gsap.registerPlugin(SplitText)
+gsap.registerPlugin(ScrollTrigger)
 
-export function Hero({ onNavigate }) {
-  const containerRef = useRef()
-  const titleRef = useRef()
-  const badgeRef = useRef()
-  const bioRef = useRef()
-  const statsRef = useRef()
-  const ctaRef = useRef()
+export function Hero({ onNavigate, isRevealing = false }) {
+  const [activeTab, setActiveTab] = useState('dotnet')
+  const heroRef = useRef(null)
+  const animatedRef = useRef(false)
 
+  // Scroll parallax exit
   useGSAP(
     () => {
-      // 1. Badge slide down
-      gsap.fromTo(
-        badgeRef.current,
-        { opacity: 0, y: -20 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.1 }
-      )
-
-      // 2. Kinetic character reveal
-      const split = new SplitText(titleRef.current, {
-        type: 'chars,words',
-        wordsClass: 'hero-word',
+      gsap.to('.hero-content-wrapper', {
+        scale: 0.94,
+        opacity: 0.35,
+        y: -50,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
       })
-
-      split.words.forEach((w) => {
-        w.style.display = 'inline-block'
-        w.style.whiteSpace = 'nowrap'
-      })
-
-      gsap.fromTo(
-        split.chars,
-        { opacity: 0, y: 70, rotateX: -65 },
-        {
-          opacity: 1,
-          y: 0,
-          rotateX: 0,
-          stagger: 0.015,
-          duration: 1.1,
-          ease: 'power3.out',
-          delay: 0.2,
-        }
-      )
-
-      // 3. Bio & stats entrance
-      gsap.fromTo(
-        bioRef.current,
-        { opacity: 0, y: 25 },
-        { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: 0.6 }
-      )
-
-      gsap.fromTo(
-        statsRef.current,
-        { opacity: 0, y: 30, scale: 0.98 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: 'back.out(1.4)', delay: 0.75 }
-      )
-
-      gsap.fromTo(
-        ctaRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.9 }
-      )
     },
-    { scope: containerRef }
+    { scope: heroRef }
   )
 
-  const handleMagneticMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = e.clientX - rect.left - rect.width / 2
-    const y = e.clientY - rect.top - rect.height / 2
-    gsap.to(e.currentTarget, {
-      x: x * 0.3,
-      y: y * 0.3,
-      duration: 0.2,
-      ease: 'power2.out',
-    })
+  // Coordinated entrance animation triggered when preloader shutters part
+  useEffect(() => {
+    const triggerEntrance = () => {
+      if (!animatedRef.current) {
+        animatedRef.current = true
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+
+        tl.fromTo('.hero-badge', { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.7 })
+        tl.fromTo(
+          '.hero-title-line',
+          { opacity: 0, y: 40, rotateX: -15 },
+          { opacity: 1, y: 0, rotateX: 0, stagger: 0.08, duration: 0.8 },
+          '-=0.4'
+        )
+        tl.fromTo('.hero-desc', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7 }, '-=0.5')
+        tl.fromTo('.hero-actions', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.6 }, '-=0.5')
+        tl.fromTo(
+          '.hero-hub',
+          { opacity: 0, scale: 0.96, y: 25 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.8, ease: 'back.out(1.2)' },
+          '-=0.5'
+        )
+      }
+    }
+
+    if (isRevealing) {
+      triggerEntrance()
+    }
+
+    const fallback = setTimeout(triggerEntrance, 2400)
+    return () => clearTimeout(fallback)
+  }, [isRevealing])
+
+  const runtimeInfo = {
+    dotnet: {
+      title: 'ASP.NET Core (.NET 10)',
+      category: 'DISTRIBUTED BACKEND ARCHITECTURE',
+      desc: 'C#, Entity Framework Core, JWT Bearer Guards, REST microservices, low-latency API execution.',
+      accent: '#3b82f6',
+      badge: 'STABLE RUNTIME',
+      metricLabel: 'REQUEST PIPELINE ARCHITECTURE',
+      metricVal: 'HIGH-CONCURRENCY',
+      barsFilled: 18,
+    },
+    react: {
+      title: 'React 19 & Next.js App Router',
+      category: 'RESPONSIVE CLIENT CRAFT',
+      desc: 'Server Components, strict TypeScript type boundaries, Tailwind design systems, zero layout shifts.',
+      accent: '#00f0ff',
+      badge: 'HARDWARE ACCELERATED',
+      metricLabel: 'FRAME RENDER TARGET',
+      metricVal: '60–120 HZ FLUID',
+      barsFilled: 20,
+    },
+    database: {
+      title: 'PostgreSQL & MySQL Relational',
+      category: 'RELATIONAL PERSISTENCE',
+      desc: 'Normalized schemas, index optimization, LINQ query tuning, atomic ACID transactions.',
+      accent: '#10b981',
+      badge: 'ACID COMPLIANT',
+      metricLabel: 'INDEX OPTIMIZATION',
+      metricVal: 'B-TREE COMPOSITE',
+      barsFilled: 16,
+    },
   }
 
-  const handleMagneticLeave = (e) => {
-    gsap.to(e.currentTarget, {
-      x: 0,
-      y: 0,
-      duration: 0.6,
-      ease: 'elastic.out(1.2, 0.4)',
-    })
-  }
+  const cur = runtimeInfo[activeTab]
 
   return (
     <section
-      ref={containerRef}
+      ref={heroRef}
       id="hero"
       style={{
         position: 'relative',
         minHeight: '100vh',
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
         alignItems: 'center',
-        textAlign: 'center',
-        padding: '140px clamp(24px, 4vw, 64px) 80px',
-        maxWidth: '1520px',
-        margin: '0 auto',
+        padding: '130px 0 80px',
         zIndex: 2,
       }}
     >
-      {/* 1. Identity Badge */}
-      <div
-        ref={badgeRef}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '12px',
-          padding: '8px 22px',
-          borderRadius: '9999px',
-          background: 'rgba(255, 255, 255, 0.04)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(12px)',
-          fontFamily: 'JetBrains Mono, monospace',
-          fontSize: '0.78rem',
-          letterSpacing: '0.12em',
-          color: '#94a3b8',
-          marginBottom: '32px',
-        }}
-      >
-        <span style={{ color: '#a855f7', fontWeight: 600 }}>NASR ELSHAMEKH</span>
-        <span style={{ opacity: 0.3 }}>/</span>
-        <span style={{ color: '#ffffff' }}>FULL-STACK SOFTWARE ENGINEER</span>
-        <span style={{ opacity: 0.3 }}>/</span>
-        <span style={{ color: '#10b981' }}>ASP.NET CORE 10 • REACT 19</span>
-      </div>
-
-      {/* 2. Headline */}
-      <h1
-        ref={titleRef}
-        className="hero-headline"
-        style={{
-          fontFamily: 'Syne, sans-serif',
-          fontSize: 'clamp(2.4rem, 6.2vw, 5.6rem)',
-          fontWeight: 800,
-          lineHeight: 1.04,
-          letterSpacing: '-0.03em',
-          color: '#ffffff',
-          textTransform: 'uppercase',
-          maxWidth: '1280px',
-          marginBottom: '28px',
-          willChange: 'transform',
-        }}
-      >
-        ARCHITECTING RESILIENT BACKENDS <br />
-        <span style={{ color: '#a855f7', textShadow: '0 0 35px rgba(168, 85, 247, 0.45)' }}>
-          &amp; FLUID WEB
-        </span>{' '}
-        EXPERIENCES
-      </h1>
-
-      {/* 3. Personal Statement */}
-      <p
-        ref={bioRef}
-        style={{
-          fontFamily: 'Space Grotesk, sans-serif',
-          fontSize: 'clamp(1.05rem, 1.8vw, 1.3rem)',
-          color: '#94a3b8',
-          maxWidth: '820px',
-          lineHeight: 1.65,
-          fontWeight: 400,
-          margin: '0 auto 36px',
-        }}
-      >
-        I bridge the divide between high-throughput system architecture—designing distributed microservices and RESTful APIs in <strong style={{ color: '#ffffff' }}>ASP.NET Core (.NET 10)</strong> &amp; Node.js—and visceral, 60fps frontend craft in <strong style={{ color: '#ffffff' }}>React 19, Next.js</strong> &amp; TypeScript.
-      </p>
-
-      {/* 4. Tactile Stat & Identity Card */}
-      <div
-        ref={statsRef}
-        className="glass-panel"
-        style={{
-          display: 'inline-flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '28px',
-          padding: '16px 32px',
-          borderRadius: '20px',
-          marginBottom: '44px',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <img
-            src="/nasr-icon.png"
-            alt="Nasr Elshamekh"
-            style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              border: '2px solid rgba(168, 85, 247, 0.6)',
-              objectFit: 'cover',
-            }}
-          />
-          <div style={{ textAlign: 'left' }}>
-            <div style={{ fontFamily: 'Syne, sans-serif', fontSize: '0.88rem', fontWeight: 700, color: '#ffffff' }}>
-              Nasr Elshamekh
+      <div className="grid-widescreen" style={{ width: '100%' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1.15fr 0.85fr',
+            gap: 'clamp(40px, 5vw, 80px)',
+            alignItems: 'center',
+          }}
+          className="contact-col-grid hero-content-wrapper"
+        >
+          {/* Left Column: Bold Editorial Cyber Typography */}
+          <div>
+            <div
+              className="hero-badge text-mono-label"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '6px 14px',
+                borderRadius: 'var(--radius-full)',
+                background: 'rgba(0, 240, 255, 0.08)',
+                border: '1px solid var(--color-border-accent)',
+                marginBottom: '24px',
+                maxWidth: '100%',
+                flexWrap: 'wrap',
+                rowGap: '4px',
+              }}
+            >
+              <span
+                style={{
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  backgroundColor: 'var(--color-accent-cyan)',
+                  boxShadow: '0 0 6px var(--color-accent-cyan)',
+                  flexShrink: 0,
+                }}
+              />
+              <span style={{ fontWeight: 700 }}>ALEXANDRIA, EG</span>
+              <span style={{ color: 'var(--color-text-muted)' }}>//</span>
+              <span style={{ color: 'var(--color-text-high)' }}>FULL-STACK SOFTWARE ENGINEER</span>
             </div>
-            <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.68rem', color: '#64748b' }}>
-              Full-Stack Architect
+
+            <h1
+              className="text-hero"
+              style={{
+                textTransform: 'uppercase',
+                marginBottom: '24px',
+                maxWidth: '100%',
+                overflowWrap: 'break-word',
+              }}
+            >
+              <span className="hero-title-line" style={{ display: 'block' }}>
+                ENGINEERING
+              </span>
+              <span className="hero-title-line" style={{ display: 'block' }}>
+                SCALABLE SYSTEMS
+              </span>
+              <span
+                className="hero-title-line"
+                style={{
+                  display: 'block',
+                  color: 'var(--color-accent-cyan)',
+                  textShadow: '0 0 16px rgba(0, 240, 255, 0.22)',
+                }}
+              >
+                &amp; FLUID INTERFACES
+              </span>
+            </h1>
+
+            <p
+              className="hero-desc text-body-lg"
+              style={{
+                maxWidth: '640px',
+                marginBottom: '34px',
+              }}
+            >
+              Based in Alexandria, Egypt. I specialize in the full lifecycle of high-performance software—engineering resilient backend microservices in <strong style={{ color: 'var(--color-text-high)' }}>ASP.NET Core (.NET 10)</strong> and crafting responsive, low-latency interfaces in <strong style={{ color: 'var(--color-text-high)' }}>React 19 &amp; Next.js</strong>.
+            </p>
+
+            <div
+              className="hero-actions hero-actions-responsive"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '14px',
+                flexWrap: 'wrap',
+              }}
+            >
+              <button
+                onClick={() => {
+                  sound.play('warp')
+                  onNavigate('works')
+                }}
+                onMouseEnter={() => sound.play('hover')}
+                className="btn-core-primary"
+              >
+                VIEW FEATURED WORK ↓
+              </button>
+
+              <button
+                onClick={() => {
+                  sound.play('warp')
+                  onNavigate('system')
+                }}
+                onMouseEnter={() => sound.play('hover')}
+                className="btn-core-secondary"
+              >
+                <Terminal size={14} color="var(--color-accent-cyan)" />
+                <span>SYSTEM INSPECTOR ↗</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Right Column: Hollywood Cyber Telemetry Hub */}
+          <div
+            className="hero-hub hud-card"
+            style={{
+              padding: '32px',
+              position: 'relative',
+              border: '1px solid rgba(0, 240, 255, 0.22)',
+              backgroundColor: 'rgba(6, 9, 15, 0.85)',
+              boxShadow:
+                '0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 240, 255, 0.06)',
+            }}
+          >
+            {/* Profile Header Row */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '22px',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div
+                  style={{
+                    position: 'relative',
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '10px',
+                    overflow: 'hidden',
+                    border: '1.5px solid rgba(0, 240, 255, 0.5)',
+                    boxShadow: '0 0 12px rgba(0, 240, 255, 0.3)',
+                  }}
+                >
+                  <img
+                    src="/nasr-icon.png"
+                    alt="Nasr Elshamekh"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                    }}
+                  />
+                </div>
+                <div>
+                  <div
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '1rem',
+                      fontWeight: 700,
+                      color: 'var(--color-text-high)',
+                    }}
+                  >
+                    Nasr Elshamekh
+                  </div>
+                  <div className="text-mono-micro">
+                    Alexandria, Egypt (UTC+3)
+                  </div>
+                </div>
+              </div>
+
+              <span
+                className="text-mono-micro"
+                style={{
+                  color: cur.accent,
+                  padding: '4px 10px',
+                  borderRadius: 'var(--radius-sm)',
+                  background: `${cur.accent}15`,
+                  border: `1px solid ${cur.accent}40`,
+                  fontWeight: 700,
+                }}
+              >
+                {cur.badge}
+              </span>
+            </div>
+
+            {/* Interactive Mode Pills */}
+            <div
+              style={{
+                display: 'flex',
+                gap: '6px',
+                marginBottom: '20px',
+                padding: '4px',
+                background: 'rgba(0, 0, 0, 0.5)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--color-border-subtle)',
+              }}
+            >
+              {[
+                { id: 'dotnet', label: '.NET 10', icon: Cpu },
+                { id: 'react', label: 'REACT 19', icon: Activity },
+                { id: 'database', label: 'DATABASE', icon: Shield },
+              ].map((tab) => {
+                const Icon = tab.icon
+                const isSelected = activeTab === tab.id
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      setActiveTab(tab.id)
+                      sound.play('click')
+                    }}
+                    onMouseEnter={() => sound.play('hover')}
+                    className={`btn-core-tab ${isSelected ? 'active' : ''}`}
+                    style={{
+                      flex: 1,
+                      border: isSelected
+                        ? '1px solid rgba(0, 240, 255, 0.4)'
+                        : '1px solid transparent',
+                    }}
+                  >
+                    <Icon size={12} color={isSelected ? 'var(--color-accent-cyan)' : 'var(--color-text-muted)'} />
+                    <span>{tab.label}</span>
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Runtime Box */}
+            <div
+              style={{
+                padding: '18px',
+                borderRadius: 'var(--radius-md)',
+                background: 'rgba(0, 0, 0, 0.4)',
+                border: `1px solid ${cur.accent}33`,
+                marginBottom: '20px',
+              }}
+            >
+              <div
+                className="text-mono-micro"
+                style={{
+                  color: cur.accent,
+                  marginBottom: '6px',
+                  fontWeight: 700,
+                }}
+              >
+                // {cur.category}
+              </div>
+              <div
+                className="text-h3"
+                style={{
+                  color: 'var(--color-text-high)',
+                  marginBottom: '8px',
+                }}
+              >
+                {cur.title}
+              </div>
+              <p
+                className="text-body-sm"
+                style={{
+                  color: '#94a3b8',
+                  lineHeight: 1.5,
+                  marginBottom: '14px',
+                }}
+              >
+                {cur.desc}
+              </p>
+
+              {/* Segmented Cyber Telemetry Bar for Runtime */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontSize: '0.64rem',
+                    fontFamily: 'JetBrains Mono, monospace',
+                    color: '#64748b',
+                  }}
+                >
+                  <span>{cur.metricLabel}</span>
+                  <span style={{ color: '#ffffff', fontWeight: 700 }}>
+                    {cur.metricVal}
+                  </span>
+                </div>
+
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(20, 1fr)',
+                    gap: '2px',
+                    height: '10px',
+                    padding: '2px',
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    borderRadius: '3px',
+                  }}
+                >
+                  {Array.from({ length: 20 }).map((_, barIdx) => (
+                    <div
+                      key={barIdx}
+                      style={{
+                        height: '100%',
+                        borderRadius: '1px',
+                        backgroundColor:
+                          barIdx < cur.barsFilled
+                            ? cur.accent
+                            : 'rgba(255, 255, 255, 0.05)',
+                        boxShadow:
+                          barIdx < cur.barsFilled
+                            ? `0 0 6px ${cur.accent}`
+                            : 'none',
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Metrics */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '8px',
+                textAlign: 'center',
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: '0.72rem',
+              }}
+            >
+              <div
+                style={{
+                  padding: '10px 6px',
+                  background: 'rgba(255, 255, 255, 0.02)',
+                  borderRadius: '6px',
+                  border: '1px solid rgba(255, 255, 255, 0.04)',
+                }}
+              >
+                <div style={{ color: '#ffffff', fontSize: '0.96rem', fontWeight: 800 }}>
+                  06
+                </div>
+                <div style={{ color: '#64748b', fontSize: '0.62rem' }}>SHIPPED APPS</div>
+              </div>
+              <div
+                style={{
+                  padding: '10px 6px',
+                  background: 'rgba(255, 255, 255, 0.02)',
+                  borderRadius: '6px',
+                  border: '1px solid rgba(255, 255, 255, 0.04)',
+                }}
+              >
+                <div style={{ color: '#00f0ff', fontSize: '0.96rem', fontWeight: 800 }}>
+                  &lt; 200ms
+                </div>
+                <div style={{ color: '#64748b', fontSize: '0.62rem' }}>API LATENCY</div>
+              </div>
+              <div
+                style={{
+                  padding: '10px 6px',
+                  background: 'rgba(255, 255, 255, 0.02)',
+                  borderRadius: '6px',
+                  border: '1px solid rgba(255, 255, 255, 0.04)',
+                }}
+              >
+                <div style={{ color: '#10b981', fontSize: '0.96rem', fontWeight: 800 }}>
+                  120 FPS
+                </div>
+                <div style={{ color: '#64748b', fontSize: '0.62rem' }}>CALIBRATION</div>
+              </div>
             </div>
           </div>
         </div>
-
-        <div style={{ width: '1px', height: '24px', background: 'rgba(255, 255, 255, 0.1)' }} />
-
-        <div style={{ textAlign: 'left', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.74rem' }}>
-          <span style={{ color: '#64748b' }}>CORE STACK: </span>
-          <span style={{ color: '#e2e8f0' }}>React 19 • Next.js • .NET 10 • TypeScript • MySQL</span>
-        </div>
-
-        <div style={{ width: '1px', height: '24px', background: 'rgba(255, 255, 255, 0.1)' }} />
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981' }} className="live-beacon" />
-          <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.72rem', color: '#10b981' }}>
-            Open for Hire &amp; Contracts
-          </span>
-        </div>
-      </div>
-
-      {/* 5. CTA Actions with Magnetic Physics */}
-      <div
-        ref={ctaRef}
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '16px',
-        }}
-      >
-        <button
-          onClick={() => onNavigate('works')}
-          onMouseMove={handleMagneticMove}
-          onMouseLeave={handleMagneticLeave}
-          className="btn-action-primary"
-        >
-          EXPLORE SELECTED WORKS ↓
-        </button>
-
-        <button
-          onClick={() => onNavigate('contact')}
-          onMouseMove={handleMagneticMove}
-          onMouseLeave={handleMagneticLeave}
-          className="btn-action-secondary"
-        >
-          GET IN TOUCH ↗
-        </button>
-      </div>
-
-      {/* 6. Scroll Hint */}
-      <div
-        style={{
-          marginTop: '56px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '8px',
-          opacity: 0.6,
-        }}
-      >
-        <span
-          style={{
-            fontFamily: 'JetBrains Mono, monospace',
-            fontSize: '0.66rem',
-            letterSpacing: '0.2em',
-            color: '#64748b',
-          }}
-        >
-          SCROLL TO UNPACK THE STORY
-        </span>
-        <div
-          style={{
-            width: '1px',
-            height: '24px',
-            background: 'linear-gradient(to bottom, #a855f7, transparent)',
-          }}
-        />
       </div>
     </section>
   )

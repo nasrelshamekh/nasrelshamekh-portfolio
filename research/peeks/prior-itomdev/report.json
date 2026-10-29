@@ -1,0 +1,81 @@
+{
+  "title": "ITom — Creative 3D Portfolio",
+  "generator": null,
+  "frameworks": {
+    "next": false,
+    "nuxt": false,
+    "astro": false,
+    "sveltekit": false,
+    "webflow": false,
+    "framer": false,
+    "gatsby": false,
+    "react": true
+  },
+  "libs": {
+    "gsap": null,
+    "scrollTrigger": false,
+    "splitText": false,
+    "flip": false,
+    "draggable": false,
+    "observer": false,
+    "scrollSmoother": false,
+    "three": "182",
+    "lenis": false,
+    "locomotive": false,
+    "barba": false,
+    "swup": false,
+    "pixi": false,
+    "ogl": false,
+    "babylon": false,
+    "lottie": false,
+    "rive": false,
+    "spline": false,
+    "howler": false,
+    "theatre": false,
+    "viewTransitions": true
+  },
+  "scripts": [
+    "https://itomdev.com/assets/index-BWgbYKJh.js",
+    "https://us-assets.i.posthog.com/static/web-vitals.js?v=1.360.0",
+    "https://us-assets.i.posthog.com/static/dead-clicks-autocapture.js?v=1.360.0",
+    "https://us-assets.i.posthog.com/static/surveys.js?v=1.360.0",
+    "https://us-assets.i.posthog.com/static/posthog-recorder.js?v=1.360.0",
+    "https://us-assets.i.posthog.com/array/phc_WHnLrkRaCRM9jr9EfbjhC09me4DY0vH5Yx2K4rshkdQ/config.js",
+    "https://static.cloudflareinsights.com/beacon.min.js"
+  ],
+  "canvases": [
+    {
+      "w": 1440,
+      "h": 900,
+      "ctx": "webgl2?"
+    }
+  ],
+  "videos": [],
+  "svgPaths": 2,
+  "svgCount": 4,
+  "fonts": [
+    "Caveat 400 normal",
+    "Caveat 500 normal",
+    "Caveat 600 normal",
+    "Caveat 700 normal",
+    "Gloria Hallelujah 400 normal",
+    "Inter 300 normal",
+    "Inter 400 normal",
+    "Inter 500 normal",
+    "Inter 600 normal",
+    "Inter 700 normal",
+    "Cabin Sketch 700 normal",
+    "Cabin Sketch 400 normal",
+    "Fredericka the Great 400 normal",
+    "Rubik Scribble 400 normal"
+  ],
+  "scrollHeight": 900,
+  "bodyTextSample": "ITom – Award-Winning Creative Developer | Interactive Websites Portfolio of Tomasz Szmajda (ITom) — creative developer building interactive websites with smooth animations, storytelling, and clean code. Award-winning. About Me Tomasz Szmajda, known online as ITom, is an award-winning creative developer from Poland who builds interactive, engaging websites from scratch. Currently studying Computer Science at the University of Opole, he specializes in handcrafted web experiences with smooth animations, scroll-driven storytelling, and attention to detail that makes every site feel alive. His core toolkit includes React, Next.js, JavaScript, GSAP (GreenSock Animation Platform), and CSS — the foundation for buttery-smooth page transitions, micro-interactions, and scroll-triggered motion. When a project calls for it, he also works with Three.js, WebGL, and custom shaders to create immersive br",
+  "cssVarsSample": {},
+  "bg": "rgb(250, 250, 250)",
+  "url": "https://itomdev.com/",
+  "mobile": false,
+  "pageErrors": [],
+  "finalScrollY": 0,
+  "totalSeconds": 33
+}

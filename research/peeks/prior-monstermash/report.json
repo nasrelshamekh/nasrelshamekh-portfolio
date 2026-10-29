@@ -1,0 +1,155 @@
+{
+  "title": "Monster Mash: New Sketch-Based Modeling and Animation Tool",
+  "generator": null,
+  "frameworks": {
+    "next": false,
+    "nuxt": false,
+    "astro": false,
+    "sveltekit": false,
+    "webflow": false,
+    "framer": false,
+    "gatsby": false,
+    "react": false
+  },
+  "libs": {
+    "gsap": null,
+    "scrollTrigger": false,
+    "splitText": false,
+    "flip": false,
+    "draggable": false,
+    "observer": false,
+    "scrollSmoother": false,
+    "three": null,
+    "lenis": false,
+    "locomotive": false,
+    "barba": false,
+    "swup": false,
+    "pixi": false,
+    "ogl": false,
+    "babylon": false,
+    "lottie": false,
+    "rive": false,
+    "spline": false,
+    "howler": false,
+    "theatre": false,
+    "viewTransitions": true
+  },
+  "scripts": [
+    "https://www.googletagmanager.com/gtag/js?id=G-EM58Z8VHJM&cx=c&gtm=4e6a51",
+    "https://www.googletagmanager.com/gtm.js?id=GTM-53VQJ5L",
+    "https://code.jquery.com/jquery-3.5.1.slim.min.js",
+    "https://monstermash.zone/includes/module.js?v=2301121741",
+    "https://monstermash.zone/monstermash.js?v=2301121741",
+    "https://monstermash.zone/includes/FileSaver.js",
+    "https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js",
+    "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js",
+    "https://monstermash.zone/includes/main.js?v=2301121741",
+    "https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495"
+  ],
+  "canvases": [
+    {
+      "w": 1000,
+      "h": 800,
+      "ctx": "webgl?"
+    }
+  ],
+  "videos": [
+    {
+      "src": "https://monstermash.zone/imgs/tutorial-mode1.mov",
+      "w": 432,
+      "h": 432,
+      "autoplay": false,
+      "loop": true,
+      "muted": true
+    },
+    {
+      "src": "https://monstermash.zone/imgs/tutorial-mode2.mov",
+      "w": 432,
+      "h": 432,
+      "autoplay": false,
+      "loop": true,
+      "muted": true
+    },
+    {
+      "src": "https://monstermash.zone/imgs/tutorial-mode3.mov",
+      "w": 432,
+      "h": 432,
+      "autoplay": false,
+      "loop": true,
+      "muted": true
+    },
+    {
+      "src": "https://monstermash.zone/imgs/help-drawmode.mov",
+      "w": 624,
+      "h": 392,
+      "autoplay": true,
+      "loop": true,
+      "muted": true
+    },
+    {
+      "src": "https://monstermash.zone/imgs/help-inflatemode.mov",
+      "w": 680,
+      "h": 448,
+      "autoplay": true,
+      "loop": true,
+      "muted": true
+    },
+    {
+      "src": "https://monstermash.zone/imgs/help-animatemode.mov",
+      "w": 672,
+      "h": 416,
+      "autoplay": true,
+      "loop": true,
+      "muted": true
+    },
+    {
+      "src": "https://monstermash.zone/imgs/help-redrawmode.mov",
+      "w": 1920,
+      "h": 1080,
+      "autoplay": true,
+      "loop": true,
+      "muted": true
+    }
+  ],
+  "svgPaths": 0,
+  "svgCount": 0,
+  "fonts": [],
+  "scrollHeight": 900,
+  "bodyTextSample": "Monster Mash demo 1Draw 2Inflate 3Animate Help Find out how to use Monster Mash, and see what's new",
+  "cssVarsSample": {
+    "--font-family-sans-serif": "-apple-system,BlinkMacSystemFont,\"Segoe ",
+    "--light": "#f8f9fa",
+    "--indigo": "#6610f2",
+    "--yellow": "#ffc107",
+    "--green": "#28a745",
+    "--pink": "#e83e8c",
+    "--breakpoint-xs": "0",
+    "--purple": "#6f42c1",
+    "--teal": "#20c997",
+    "--gray-dark": "#343a40",
+    "--breakpoint-sm": "576px",
+    "--breakpoint-md": "768px",
+    "--breakpoint-lg": "992px",
+    "--primary": "#007bff",
+    "--blue": "#007bff",
+    "--white": "#fff",
+    "--danger": "#dc3545",
+    "--success": "#28a745",
+    "--gray": "#6c757d",
+    "--warning": "#ffc107",
+    "--red": "#dc3545",
+    "--secondary": "#6c757d",
+    "--info": "#17a2b8",
+    "--dark": "#343a40",
+    "--cyan": "#17a2b8",
+    "--breakpoint-xl": "1200px",
+    "--orange": "#fd7e14",
+    "--font-family-monospace": "SFMono-Regular,Menlo,Monaco,Consolas,\"Li"
+  },
+  "bg": "rgb(255, 255, 255)",
+  "url": "https://monstermash.zone/",
+  "mobile": false,
+  "pageErrors": [],
+  "finalScrollY": 0,
+  "totalSeconds": 16
+}

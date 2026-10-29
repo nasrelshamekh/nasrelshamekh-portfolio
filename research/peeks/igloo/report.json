@@ -1,0 +1,60 @@
+{
+  "title": "Igloo Inc.",
+  "generator": null,
+  "frameworks": {
+    "next": false,
+    "nuxt": false,
+    "astro": false,
+    "sveltekit": false,
+    "webflow": false,
+    "framer": false,
+    "gatsby": false,
+    "react": false
+  },
+  "libs": {
+    "gsap": null,
+    "scrollTrigger": false,
+    "splitText": false,
+    "flip": false,
+    "draggable": false,
+    "observer": false,
+    "scrollSmoother": false,
+    "three": "165",
+    "lenis": false,
+    "locomotive": false,
+    "barba": false,
+    "swup": false,
+    "pixi": false,
+    "ogl": false,
+    "babylon": false,
+    "lottie": false,
+    "rive": false,
+    "spline": false,
+    "howler": false,
+    "theatre": false,
+    "viewTransitions": true
+  },
+  "scripts": [
+    "https://www.igloo.inc/assets/index-2eb69c09.js"
+  ],
+  "canvases": [],
+  "videos": [],
+  "svgPaths": 0,
+  "svgCount": 0,
+  "fonts": [
+    "IBMPlexMono-Medium 400 normal",
+    "IBMPlexMono-Regular 400 normal"
+  ],
+  "scrollHeight": 900,
+  "bodyTextSample": "",
+  "cssVarsSample": {
+    "--bgColor": "#A0A5B1",
+    "--default-font": "sans-serif"
+  },
+  "bg": "rgb(160, 165, 177)",
+  "url": "https://www.igloo.inc/",
+  "mobile": false,
+  "pageErrors": [],
+  "finalScrollY": 0,
+  "totalSeconds": 28
+}
